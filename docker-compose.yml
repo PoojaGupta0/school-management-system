@@ -1,0 +1,26 @@
+version: "3"
+   
+services:
+  db:
+    image: 'postgres:latest'
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=school_management_user
+      - POSTGRES_PASSWORD=school_management_user_123
+      - POSTGRES_DB=school_management_db
+  web:
+    build: .
+    command: >
+      sh -c "
+             python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:80"
+    volumes:
+      - .:/app
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    links:
+      - db:db
