@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {% block style %}
+    <style>
+            body {
+            background: url( {% static 'core/images/background_image.jpg' %});
+            -webkit-background-size: cover;
+          -moz-background-size: cover;
+          -o-background-size: cover;
+          background-size: cover;
+            }
+
+    </style>
+    <link href="{% static 'core/css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'core/css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+{% endblock %}
+{% block js %}
+<script src="{% static 'core/js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'core/js/bootstrap.min.js' %}"></script>
+{% endblock %}
+</body>
+</html>
