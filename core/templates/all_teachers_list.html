@@ -21,7 +21,7 @@
     <tr>
         <td>{{forloop.counter}}</td>
         <td>{{ teacher.name }}</td>
-        <td><a href="{% url 'teacher_all_students_list' teacher_id=teacher.id %}">view student</a></td>
+        <td><a class='btn btn-info' href="{% url 'teacher_all_students_list' teacher_id=teacher.id %}">view students</a></td>
         <td><a href="#">edit</a></td>
         <td><button class="btn btn-outline-danger" onclick="DeleteTeacher({{teacher.id}})">Delete</button></td>
     </tr>
