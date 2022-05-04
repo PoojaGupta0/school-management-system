@@ -44,7 +44,7 @@
                         <br>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-success" onclick="#" type="button">Add</button>
+                        <button class="btn btn-success" onclick="CreateTeacher()" type="button">Add</button>
                         <button class="cancelbtn" onclick="ClosePopup()" style="padding:5px;" type="button">Cancel
                         </button>
                     </div>
@@ -55,6 +55,7 @@
 </div>
 {% endblock %}
 {% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
  function AddTeacher() {
         document.getElementById("AddTeacherForm").style.display = "block";
@@ -63,6 +64,35 @@
     function ClosePopup() {
         document.getElementById("AddTeacherForm").style.display = "none";
     }
+
+     var url = "{% url 'graphql_view' %}";
+     function CreateTeacher() {
+     query = `mutation ($name:String!){
+            createTeacher(name:$name)
+          {
+          teacher{id name}
+          }}`;
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    variables: {
+                        "name": $('#teacher_name').val(),
+                    }
+                }),
+            }).then(response => {
+                if (!response.ok) {}
+                    location.reload();
+                            })
+            .then(result => {
+                console.log(result)
+            })
+};
+
 
 </script>
 {% endblock %}
