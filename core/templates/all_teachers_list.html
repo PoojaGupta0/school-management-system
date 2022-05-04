@@ -3,7 +3,7 @@
 <br>
 <div style="text-align: right; padding:15px;">
     <a class="btn btn-primary" href="{% url 'dashboard' %}">Back to Dashboard</a>
-    <button class="btn btn-primary" id="create_meeting" onclick="AddTeacher()" type="button">Add Teacher</button>
+    <button class="btn btn-primary"  onclick="AddTeacher()" type="button">Add Teacher</button>
 </div>
 <table , class="table table-dark" id="my_table">
     <h2 style="color:white;font-size:3rem; border-bottom: 1px solid grey;">All Teachers</h2>
@@ -22,14 +22,14 @@
         <td>{{forloop.counter}}</td>
         <td>{{ teacher.name }}</td>
         <td><a class='btn btn-info' href="{% url 'teacher_all_students_list' teacher_id=teacher.id %}">view students</a></td>
-        <td><a href="#">edit</a></td>
+        <td><button class="btn btn-outline-success"  onclick="UpdateTeacher({{teacher.id}}, '{{teacher.name}}')" type="button">Edit</button></td>
         <td><button class="btn btn-outline-danger" onclick="DeleteTeacher({{teacher.id}})">Delete</button></td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
 <div class="modal" id="AddTeacherForm" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Add Teacher </h4>
@@ -45,24 +45,60 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-success" onclick="CreateTeacher()" type="button">Add</button>
-                        <button class="cancelbtn" onclick="ClosePopup()" style="padding:5px;" type="button">Cancel
-                        </button>
+                        <button type="button" class="btn btn-default" onclick="CloseCreateFormPopup()" data-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<div  class="modal"  id="UpdateTeacherForm" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Update Teacher name</h4>
+      </div>
+      <div class="modal-body">
+        <form class="modal-content animate">
+            {% csrf_token %}
+            <div style="padding:5px;">
+                <label for="TeacherName"><b>Teacher Name</b></label>
+                <input id="update_teacher_name"  name="update_teacher_name" placeholder="Enter name" type="text">
+                <br>
+                <br>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+      <button class="btn btn-success" onclick="EditTeacherName()" type="button">Update</button>
+        <button type="button" class="btn btn-default" onclick="CloseUpdateFormPopup()" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock %}
 {% block js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+ var updated_teacher_id = null;
  function AddTeacher() {
         document.getElementById("AddTeacherForm").style.display = "block";
     }
 
-    function ClosePopup() {
+    function CloseCreateFormPopup() {
         document.getElementById("AddTeacherForm").style.display = "none";
+    }
+
+  function UpdateTeacher(teacher_id, teacher_name) {
+        document.getElementById("UpdateTeacherForm").style.display = "block";
+        updated_teacher_id = teacher_id
+         var elem = document.getElementById("update_teacher_name");
+         elem.value = teacher_name;
+    }
+    function CloseUpdateFormPopup() {
+        document.getElementById("UpdateTeacherForm").style.display = "none";
     }
 
      var url = "{% url 'graphql_view' %}";
@@ -115,6 +151,37 @@
                 if (!response.ok) {
                 }
                 alert('Delete Successfully')
+                location.reload()
+                            })
+            .then(result => {
+                console.log(result)
+            })
+};
+
+
+     function EditTeacherName() {
+     query = `mutation ($id:ID!, $name:String!){
+            updateTeacher(id:$id name:$name)
+          {
+          teacher{id name}
+          }}`;
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    variables: {
+                        "id": updated_teacher_id,
+                        "name":  $('#update_teacher_name').val()
+                    }
+                }),
+            }).then(response => {
+                if (!response.ok) {
+                }
+                alert('Updated Successfully')
                 location.reload()
                             })
             .then(result => {

@@ -58,10 +58,28 @@ class DeleteTeacher(graphene.Mutation):
         return "Record deleted successfully"
 
 
+class UpdateTeacher(graphene.Mutation):
+    __doc__ = "This class is used to update the teacher name"
+
+    class Arguments:
+        id = graphene.ID()
+        name = graphene.String()
+
+    teacher = graphene.Field(TeachersType)
+
+    def mutate(self, info, id, name):
+        teacher = Teacher.objects.filter(id=id).first()
+        if teacher:
+            teacher.name = name
+            teacher.save()
+        return "Record Updated successfully"
+
+
 class Mutation(graphene.ObjectType):
     add_or_remove_star = AddOrRemoveStar.Field()
     create_teacher = CreateTeacher.Field()
     delete_teacher = DeleteTeacher.Field()
+    update_teacher = UpdateTeacher.Field()
 
 
 schema = graphene.Schema(mutation=Mutation)
