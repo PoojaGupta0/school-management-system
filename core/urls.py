@@ -1,4 +1,8 @@
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
+from graphene_django.views import GraphQLView
+
+from core.schema import schema
 
 from .views import (AllTeachersListView, DashboardView,
                     TeacherAllStudentListView, UserLoginView, UserSignUpView,
@@ -15,5 +19,10 @@ urlpatterns = [
         "teacher_all_student_list/<int:teacher_id>/",
         TeacherAllStudentListView.as_view(),
         name="teacher_all_students_list",
+    ),
+    path(
+        "graphql/",
+        csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema)),
+        name="graphql_view",
     ),
 ]
