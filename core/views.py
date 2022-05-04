@@ -5,7 +5,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
-from django.views.generic import TemplateView
+from django.views.generic import ListView, TemplateView
+
+from core.models import Student, Teacher, TeachersOfStudent
 
 User = get_user_model()
 
@@ -52,3 +54,24 @@ def logout(request):
     """
     django_logout(request)
     return redirect("dashboard")
+
+
+class AllTeachersListView(ListView):
+    model = Teacher
+    context_object_name = "all_teachers_list"
+    template_name = "all_teachers_list.html"
+    __doc__ = "This view is used to the the list of all teachers"
+
+
+class TeacherAllStudentListView(ListView):
+    model = TeachersOfStudent
+    context_object_name = "teacher_all_students_list"
+    template_name = "teacher_all_students_list.html"
+    __doc__ = (
+        "This view is used to the the list of all all student of associated teacher"
+    )
+
+    def get_queryset(self):
+        return TeachersOfStudent.objects.filter(
+            teacher_id=self.kwargs.get("teacher_id")
+        )

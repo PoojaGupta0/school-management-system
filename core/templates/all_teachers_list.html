@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<br>
+<div style="text-align: right; padding:15px;">
+    <a class="btn btn-primary" href="{% url 'dashboard' %}">Back to Dashboard</a>
+    <button class="btn btn-primary" id="create_meeting" onclick="AddTeacher()" type="button">Add Teacher</button>
+</div>
+<table , class="table table-dark" id="my_table">
+    <h2 style="color:white;font-size:3rem; border-bottom: 1px solid grey;">All Teachers</h2>
+    <thead>
+    <tr>
+        <th>S.No.</th>
+        <th>Name</th>
+        <th>Students</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for teacher in all_teachers_list %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{ teacher.name }}</td>
+        <td><a href="{% url 'teacher_all_students_list' teacher_id=teacher.id %}">view student</a></td>
+        <td><a href="#">edit</a></td>
+        <td><a href="#">delete</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="modal" id="AddTeacherForm" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Teacher </h4>
+            </div>
+            <div class="modal-body">
+                <form class="modal-content animate">
+                    {% csrf_token %}
+                    <div style="padding:5px;">
+                        <label for="TeacherName"><b>Teacher Name</b></label>
+                        <input id="teacher_name" name="teacher_name" placeholder="Enter name" type="text">
+                        <br>
+                        <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" onclick="#" type="button">Add</button>
+                        <button class="cancelbtn" onclick="ClosePopup()" style="padding:5px;" type="button">Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+ function AddTeacher() {
+        document.getElementById("AddTeacherForm").style.display = "block";
+    }
+
+    function ClosePopup() {
+        document.getElementById("AddTeacherForm").style.display = "none";
+    }
+
+</script>
+{% endblock %}
