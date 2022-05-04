@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<br>
+
+<table class="table table-dark" , id="my_table">
+  <thead>
+    <tr>
+    <th>Name</th>
+    <th>View</th>
+    <th>Edit</th>
+    <th>Delete</th>
+    </tr>
+</thead>
+<tbody>
+    {% for student in students_list %}
+    <tr>
+    <td>{{ student.name }}</td>
+    <td><a href="#">view</a></td>
+    <td><a href="#">edit</a></td>
+    <td><a href="#">delete</a></td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+<div class="modal" id="AddStudentForm" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Add Teacher </h4>
+        </div>
+        <div class="modal-body">
+            <form class="modal-content animate">
+                {% csrf_token %}
+                {{form.as_p}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="#">Add</button>
+                    <button type="button" style="padding:5px;" onclick="ClosePopup()" class="cancelbtn">Cancel</button>
+               </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block js %}
+<script>
+ function AddTeacher() {
+        document.getElementById("AddStudentForm").style.display = "block";
+    }
+
+    function ClosePopup() {
+        document.getElementById("AddStudentForm").style.display = "none";
+    }
+</script>
+{% endblock %}

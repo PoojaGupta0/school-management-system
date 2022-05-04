@@ -75,3 +75,10 @@ class TeacherAllStudentListView(ListView):
         return TeachersOfStudent.objects.filter(
             teacher_id=self.kwargs.get("teacher_id")
         )
+
+
+class AllStudentListView(ListView):
+    model = Student
+    context_object_name = "students_list"
+    template_name = "all_students_list.html"
+    __doc__ = "This view is used to the the list of all Students"

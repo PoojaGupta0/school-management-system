@@ -4,7 +4,7 @@ from graphene_django.views import GraphQLView
 
 from core.schema import schema
 
-from .views import (AllTeachersListView, DashboardView,
+from .views import (AllStudentListView, AllTeachersListView, DashboardView,
                     TeacherAllStudentListView, UserLoginView, UserSignUpView,
                     logout)
 
@@ -25,4 +25,5 @@ urlpatterns = [
         csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema)),
         name="graphql_view",
     ),
+    path("all_student_list/", AllStudentListView.as_view(), name="all_students_list"),
 ]
