@@ -43,9 +43,25 @@ class CreateTeacher(graphene.Mutation):
         return CreateTeacher(teacher=teacher)
 
 
+class DeleteTeacher(graphene.Mutation):
+    __doc__ = "This class is used to remove the teacher"
+
+    class Arguments:
+        id = graphene.ID()
+
+    teacher = graphene.Field(TeachersType)
+
+    def mutate(self, info, id):
+        teacher = Teacher.objects.get(id=id)
+        if teacher:
+            teacher.delete()
+        return "Record deleted successfully"
+
+
 class Mutation(graphene.ObjectType):
     add_or_remove_star = AddOrRemoveStar.Field()
     create_teacher = CreateTeacher.Field()
+    delete_teacher = DeleteTeacher.Field()
 
 
 schema = graphene.Schema(mutation=Mutation)
