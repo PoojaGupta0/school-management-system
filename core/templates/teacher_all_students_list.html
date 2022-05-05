@@ -9,8 +9,8 @@
     </button>
 </div>
 <table , class="table table-dark" id="my_table">
-    <h2 style="color:white;font-size:3rem; border-bottom: 1px solid grey;">All student of
-        {{teacher.name}}</h2>
+    <h2 style="color:white;font-size:3rem; border-bottom: 1px solid grey;"><strong>All Assigned Student of
+        {{teacher.name}}</strong></h2>
     <thead>
     <tr>
         <th>S.No.</th>
@@ -23,7 +23,7 @@
     {% for instance in teacher_all_students_list %}
     <tr>
         <td>{{forloop.counter}}</td>
-        <td>{{ instance.student.name }}</td>
+        <td>{{ instance.student_name }}</td>
         <td></td>
 
         <td>

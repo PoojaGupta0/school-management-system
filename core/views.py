@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import F
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -72,7 +73,7 @@ class TeacherAllStudentListView(ListView):
         context = super().get_context_data(**kwargs)
         context["teacher_all_students_list"] = TeachersOfStudent.objects.filter(
             teacher_id=self.kwargs.get("teacher_id")
-        )
+        ).annotate(student_name=F('student__name'))
         context["teacher"] = Teacher.objects.filter(
             id=self.kwargs.get("teacher_id")
         ).first()
@@ -98,7 +99,7 @@ class StudentAllTeachersListView(ListView):
         context = super().get_context_data(**kwargs)
         context["student_all_teacher_list"] = TeachersOfStudent.objects.filter(
             student=self.kwargs.get("student_id")
-        )
+        ).annotate(teacher_name=F('teacher__name'))
         context["student"] = Student.objects.filter(
             id=self.kwargs.get("student_id")
         ).first()
