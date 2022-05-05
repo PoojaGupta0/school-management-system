@@ -125,6 +125,22 @@ class UpdateStudent(graphene.Mutation):
         return "Record Updated successfully"
 
 
+class AssignStudent(graphene.Mutation):
+    __doc__ = "This class is used to assign student to the teacher"
+
+    class Arguments:
+        teacher_id = graphene.ID()
+        student_id = graphene.ID()
+
+    students_of_teacher = graphene.Field(StudentsOfTeachersType)
+
+    def mutate(self, info, teacher_id, student_id):
+        students_of_teacher = TeachersOfStudent.objects.create(
+            teacher_id=teacher_id, student_id=student_id
+        )
+        return AssignStudent(students_of_teacher=students_of_teacher)
+
+
 class Mutation(graphene.ObjectType):
     add_or_remove_star = AddOrRemoveStar.Field()
     create_teacher = CreateTeacher.Field()
@@ -133,6 +149,7 @@ class Mutation(graphene.ObjectType):
     create_student = CreateStudent.Field()
     delete_student = DeleteStudent.Field()
     update_student = UpdateStudent.Field()
+    assign_student = AssignStudent.Field()
 
 
 schema = graphene.Schema(mutation=Mutation)

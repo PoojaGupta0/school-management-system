@@ -76,6 +76,9 @@ class TeacherAllStudentListView(ListView):
         context["teacher"] = Teacher.objects.filter(
             id=self.kwargs.get("teacher_id")
         ).first()
+        context["student_list"] = Student.objects.exclude(
+            teachersofstudent__teacher_id=self.kwargs.get("teacher_id")
+        )
         return context
 
 

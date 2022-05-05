@@ -4,7 +4,9 @@
 <div style="text-align: right; padding:15px;">
     <a class="btn btn-primary" href="{% url 'dashboard' %}">Back to Dashboard</a>
     <a class="btn btn-primary" href="{% url 'all_teachers_list' %}"> Back to teachers List</a>
-    <button class="btn btn-primary" id="Add student" onclick="AddStudent()" type="button">Add Student</button>
+    <button class="btn btn-primary" id="Add student" onclick="AddStudentInTeacherForm({{teacher.id}})" type="button">
+        Assign Student
+    </button>
 </div>
 <table , class="table table-dark" id="my_table">
     <h2 style="color:white;font-size:3rem; border-bottom: 1px solid grey;">All student of
@@ -14,7 +16,7 @@
         <th>S.No.</th>
         <th>Name</th>
         <th></th>
-        <th>Exceptional Students </th>
+        <th>Exceptional Students</th>
     </tr>
     </thead>
     <tbody>
@@ -37,10 +39,59 @@
     {% endfor %}
     </tbody>
 </table>
+
+
+<div class="modal" id="AddStudentInTeacherForm" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Assign Student to Teacher </h4>
+            </div>
+            <div class="modal-body">
+                <form class="modal-content animate">
+                    {% csrf_token %}
+                    <div style="padding:5px;">
+                        {% if student_list %}
+                        <label for="TeacherName"><b>Choose student</b></label>
+                        <select aria-label="Default select example" class="form-select form-select-sm" id="student_id">
+                            <option selected>Choose anyone</option>
+                            {% for student in student_list %}
+                            <option value={{student.id}}>{{student.name}}</option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <h3>You have already assigned all Students</h3>
+                        {% endif %}
+                        <br>
+                        <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" onclick="AssignStudent()" type="button">Add</button>
+                        <button class="btn btn-default" data-dismiss="modal" onclick="CloseCreateFormPopup()"
+                                type="button">Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 {% block js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+     var teacher_id = null;
+     function AddStudentInTeacherForm(id) {
+            document.getElementById("AddStudentInTeacherForm").style.display = "block";
+            teacher_id = id
+        }
+
+        function CloseCreateFormPopup() {
+            document.getElementById("AddStudentInTeacherForm").style.display = "none";
+        }
+
+
      var url = "{% url 'graphql_view' %}";
      function AddOrRemoveStar(instance_id) {
      query = `mutation ($id:ID!){
@@ -68,6 +119,37 @@
                 console.log(result)
             })
 };
+
+   function AssignStudent() {
+     query = `mutation ($teacherId:ID!, $studentId:ID!){
+            assignStudent(teacherId:$teacherId studentId:$studentId)
+          {
+          studentsOfTeacher{id}
+          }}`;
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    variables: {
+                        "teacherId": teacher_id,
+                        "studentId":  $('#student_id').val()
+                    }
+                }),
+            }).then(response => {
+                if (!response.ok) {
+                }
+                alert('Assigned Student Successfully')
+                location.reload()
+                            })
+            .then(result => {
+                console.log(result)
+            })
+};
+
 
 </script>
 {% endblock %}
