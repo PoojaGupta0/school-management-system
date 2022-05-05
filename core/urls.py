@@ -5,8 +5,8 @@ from graphene_django.views import GraphQLView
 from core.schema import schema
 
 from .views import (AllStudentListView, AllTeachersListView, DashboardView,
-                    TeacherAllStudentListView, UserLoginView, UserSignUpView,
-                    logout)
+                    StudentAllTeachersListView, TeacherAllStudentListView,
+                    UserLoginView, UserSignUpView, logout)
 
 urlpatterns = [
     path("", DashboardView.as_view(), name="dashboard"),
@@ -26,4 +26,9 @@ urlpatterns = [
         name="graphql_view",
     ),
     path("all_student_list/", AllStudentListView.as_view(), name="all_students_list"),
+    path(
+        "student_all_teacher_list/<int:student_id>/",
+        StudentAllTeachersListView.as_view(),
+        name="student_all_teacher_list",
+    ),
 ]

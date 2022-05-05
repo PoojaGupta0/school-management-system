@@ -18,10 +18,10 @@
 <tbody>
     {% for student in students_list %}
     <tr>
-    <td>{{ student.name }}</td>
-    <td><a href="#">view</a></td>
-    <td><a href="#">edit</a></td>
-    <td><a href="#">delete</a></td>
+        <td>{{ student.name }}</td>
+        <td><a class='btn btn-info' href="{% url 'student_all_teacher_list' student_id=student.id %}">view students</a></td>
+        <td><a href="#">edit</a></td>
+        <td><a href="#">delete</a></td>
     </tr>
     {% endfor %}
 </tbody>

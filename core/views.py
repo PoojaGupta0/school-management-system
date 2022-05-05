@@ -67,12 +67,9 @@ class TeacherAllStudentListView(ListView):
     model = TeachersOfStudent
     context_object_name = "teacher_all_students_list"
     template_name = "teacher_all_students_list.html"
-    __doc__ = (
-        "This view is used to the the list of all student of associated teacher"
-    )
+    __doc__ = "This view is used to get the list of all student of associated teacher"
 
     def get_queryset(self):
-
         return TeachersOfStudent.objects.filter(
             teacher_id=self.kwargs.get("teacher_id")
         )
@@ -82,4 +79,14 @@ class AllStudentListView(ListView):
     model = Student
     context_object_name = "students_list"
     template_name = "all_students_list.html"
-    __doc__ = "This view is used to the the list of all Students"
+    __doc__ = "This view is used to get the list of all Students"
+
+
+class StudentAllTeachersListView(ListView):
+    model = TeachersOfStudent
+    context_object_name = "student_all_teacher_list"
+    template_name = "student_all_teachers_list.html"
+    __doc__ = "This view is used to get the list of all teachers of associated student"
+
+    def get_queryset(self):
+        return TeachersOfStudent.objects.filter(student=self.kwargs.get("student_id"))
