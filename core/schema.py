@@ -29,7 +29,7 @@ class AddOrRemoveStar(graphene.Mutation):
         students_of_teacher = TeachersOfStudent.objects.get(pk=id)
         if students_of_teacher is not None:
             students_of_teacher.is_stared = (
-                False if students_of_teacher.is_stared == True else True
+                False if students_of_teacher.is_stared else True
             )
             students_of_teacher.save()
         return AddOrRemoveStar(students_of_teacher=students_of_teacher)
