@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 
-from core.models import Teacher, TeachersOfStudent
+from core.models import Teacher, TeachersOfStudent, Student
 
 
 class StudentsOfTeachersType(DjangoObjectType):
@@ -12,6 +12,11 @@ class StudentsOfTeachersType(DjangoObjectType):
 class TeachersType(DjangoObjectType):
     class Meta:
         model = Teacher
+
+
+class StudentsType(DjangoObjectType):
+    class Meta:
+        model = Student
 
 
 class AddOrRemoveStar(graphene.Mutation):
@@ -75,11 +80,25 @@ class UpdateTeacher(graphene.Mutation):
         return "Record Updated successfully"
 
 
+class CreateStudent(graphene.Mutation):
+    __doc__ = "This class is used to create a new student"
+
+    class Arguments:
+        name = graphene.String()
+
+    student = graphene.Field(StudentsType)
+
+    def mutate(self, info, name):
+        student = Student.objects.create(name=name)
+        return CreateStudent(student=student)
+
+
 class Mutation(graphene.ObjectType):
     add_or_remove_star = AddOrRemoveStar.Field()
     create_teacher = CreateTeacher.Field()
     delete_teacher = DeleteTeacher.Field()
     update_teacher = UpdateTeacher.Field()
+    create_student = CreateStudent.Field()
 
 
 schema = graphene.Schema(mutation=Mutation)

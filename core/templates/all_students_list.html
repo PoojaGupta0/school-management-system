@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <br>
-
+<div style="text-align: right; padding:15px;">
+    <a class="btn btn-primary" href="{% url 'dashboard' %}">Back to Dashboard</a>
+    <button class="btn btn-primary"  onclick="CreateStudentForm()" type="button"><strong>Add New Student</strong></button>
+</div>
 <table class="table table-dark" , id="my_table">
+    <h2 style="color:white;font-size:3rem; border-bottom: 1px solid grey;">All Students</h2>
   <thead>
     <tr>
     <th>Name</th>
@@ -23,7 +27,7 @@
 </tbody>
 </table>
 <div class="modal" id="AddStudentForm" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Add Teacher </h4>
@@ -31,10 +35,15 @@
         <div class="modal-body">
             <form class="modal-content animate">
                 {% csrf_token %}
-                {{form.as_p}}
+                    <div style="padding:5px;">
+                        <label for="StudentName"><b>Student Name</b></label>
+                      <input id="student_name" name="student_name" placeholder="Enter name" type="text">
+                        <br>
+                        <br>
+                    </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" onclick="#">Add</button>
-                    <button type="button" style="padding:5px;" onclick="ClosePopup()" class="cancelbtn">Cancel</button>
+                    <button class="btn btn-success" onclick="CreateStudent()" type="button">Add</button>
+                  <button type="button" class="btn btn-default" onclick="CloseCreateFormPopup()" data-dismiss="modal">Close</button>
                </div>
             </form>
         </div>
@@ -43,13 +52,44 @@
   </div>
 {% endblock %}
 {% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
- function AddTeacher() {
+ function CreateStudentForm() {
         document.getElementById("AddStudentForm").style.display = "block";
     }
 
-    function ClosePopup() {
+    function CloseCreateFormPopup() {
         document.getElementById("AddStudentForm").style.display = "none";
     }
+
+     var url = "{% url 'graphql_view' %}";
+     function CreateStudent() {
+     query = `mutation ($name:String!){
+            createStudent(name:$name)
+          {
+          student{id name}
+          }}`;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    variables: {
+                        "name": $('#student_name').val(),
+                    }
+                }),
+            }).then(response => {
+                if (!response.ok) {}
+                    location.reload();
+                            })
+            .then(result => {
+                console.log(result)
+            })
+
+};
+
 </script>
 {% endblock %}
