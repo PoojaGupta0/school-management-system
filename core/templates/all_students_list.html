@@ -22,7 +22,11 @@
         <td>{{ student.name }}</td>
         <td><a class='btn btn-info' href="{% url 'student_all_teacher_list' student_id=student.id %}">view students</a>
         </td>
-        <td><a href="#">edit</a></td>
+        <td>
+            <button class="btn btn-outline-success" onclick="UpdateStudentForm({{student.id}}, '{{student.name}}')"
+                    type="button">Edit
+            </button>
+        </td>
         <td>
             <button class="btn btn-outline-danger" onclick="DeleteStudent({{student.id}})">Delete</button>
         </td>
@@ -56,10 +60,39 @@
         </div>
     </div>
 </div>
+
+<div class="modal" id="UpdateStudentForm" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Update Teacher name</h4>
+            </div>
+            <div class="modal-body">
+                <form class="modal-content animate">
+                    {% csrf_token %}
+                    <div style="padding:5px;">
+                        <label for="StudentName"><b>Student Name</b></label>
+                        <input id="update_student_name" name="update_student_name" placeholder="Enter name" type="text">
+                        <br>
+                        <br>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="EditStudentName()" type="button">Update</button>
+                <button class="btn btn-default" data-dismiss="modal" onclick="CloseUpdateFormPopup()" type="button">
+                    Close
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
 {% endblock %}
 {% block js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+ var updated_student_id = null;
  function CreateStudentForm() {
         document.getElementById("AddStudentForm").style.display = "block";
     }
@@ -67,6 +100,17 @@
     function CloseCreateFormPopup() {
         document.getElementById("AddStudentForm").style.display = "none";
     }
+
+      function UpdateStudentForm(student_id, student_name) {
+        document.getElementById("UpdateStudentForm").style.display = "block";
+        updated_student_id = student_id
+         var elem = document.getElementById("update_student_name");
+         elem.value = student_name;
+    }
+    function CloseUpdateFormPopup() {
+        document.getElementById("UpdateStudentForm").style.display = "none";
+    }
+
 
      var url = "{% url 'graphql_view' %}";
      function CreateStudent() {
@@ -125,6 +169,36 @@
             })
 };
 
+
+     function EditStudentName() {
+     query = `mutation ($id:ID!, $name:String!){
+            updateStudent(id:$id name:$name)
+          {
+          student{id name}
+          }}`;
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    variables: {
+                        "id": updated_student_id,
+                        "name":  $('#update_student_name').val()
+                    }
+                }),
+            }).then(response => {
+                if (!response.ok) {
+                }
+                alert('Updated Successfully')
+                location.reload()
+                            })
+            .then(result => {
+                console.log(result)
+            })
+};
 
 
 </script>
