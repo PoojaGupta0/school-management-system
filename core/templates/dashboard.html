@@ -2,8 +2,13 @@
 {% block content %}
 <div>
     <br>
+      {% if request.user.is_authenticated %}
     &nbsp; &nbsp;<a class="btn btn-info" href="{% url 'all_teachers_list' %}"> Teachers List</a>
     &nbsp; &nbsp;&nbsp;&nbsp;<a class="btn btn-info" href="{% url 'all_students_list' %}">Student List</a>
+    {% else %}
+        &nbsp; &nbsp;<a class="btn btn-info" href="{% url 'login' %}"> Teachers List</a>
+    &nbsp; &nbsp;&nbsp;&nbsp;<a class="btn btn-info" href="{% url 'login' %}">Student List</a>
+    {% endif %}
 </div>
 {% endblock %}
 {% block js %}
