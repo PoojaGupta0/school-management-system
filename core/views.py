@@ -3,8 +3,9 @@ from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import F
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic import ListView, TemplateView
 
@@ -37,16 +38,17 @@ class UserLoginView(TemplateView):
             password = request.POST.get("password")
         else:
             messages.add_message(request, messages.INFO, "User doesn't exists ")
-            return redirect("/login")
+            return HttpResponseRedirect(reverse("login"))
+
         user = authenticate(username=username, password=password)
         if user:
             login(request, user)
-            return redirect("dashboard")
+            return HttpResponseRedirect(reverse("dashboard"))
         else:
             messages.add_message(
                 request, messages.INFO, "Username or Password is incorrect."
             )
-            return redirect("/login")
+            return HttpResponseRedirect(reverse("login"))
 
 
 def logout(request):
