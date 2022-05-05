@@ -65,14 +65,18 @@ class AllTeachersListView(ListView):
 
 class TeacherAllStudentListView(ListView):
     model = TeachersOfStudent
-    context_object_name = "teacher_all_students_list"
     template_name = "teacher_all_students_list.html"
     __doc__ = "This view is used to get the list of all student of associated teacher"
 
-    def get_queryset(self):
-        return TeachersOfStudent.objects.filter(
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["teacher_all_students_list"] = TeachersOfStudent.objects.filter(
             teacher_id=self.kwargs.get("teacher_id")
         )
+        context["teacher"] = Teacher.objects.filter(
+            id=self.kwargs.get("teacher_id")
+        ).first()
+        return context
 
 
 class AllStudentListView(ListView):
@@ -84,9 +88,15 @@ class AllStudentListView(ListView):
 
 class StudentAllTeachersListView(ListView):
     model = TeachersOfStudent
-    context_object_name = "student_all_teacher_list"
     template_name = "student_all_teachers_list.html"
     __doc__ = "This view is used to get the list of all teachers of associated student"
 
-    def get_queryset(self):
-        return TeachersOfStudent.objects.filter(student=self.kwargs.get("student_id"))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["student_all_teacher_list"] = TeachersOfStudent.objects.filter(
+            student=self.kwargs.get("student_id")
+        )
+        context["student"] = Student.objects.filter(
+            id=self.kwargs.get("student_id")
+        ).first()
+        return context
